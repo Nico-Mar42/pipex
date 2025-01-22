@@ -3,139 +3,132 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 14:26:07 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/20 18:01:18 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/22 17:34:10 by draask           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "../include/pipex.h"
 
-void free_tcmd(t_cmd **data, char *path)
+void	child_process(t_data *data, int i, char **envp)
 {
-	int i;
+	int		fd_in;
+	int		fd_out;
+	int		j;
+	char	**args;
+	char	*path;
 
-	i = -1;
-	while((*data)->cmd_arg[++i])
-		free((*data)->cmd_arg[i]);
-	free((*data)->cmd_arg);
-	i = -1;
-	while((*data)->path[++i])
-		free((*data)->path[i]);
-	free((*data)->path);
-	free(*data);
+	if (i == 0)
+	{
+		fd_in = open(data->infile, O_RDONLY);
+		//error gestion
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+		dup2(data->pipe_fd[0][1], STDOUT_FILENO);
+	}
+	else if (i == data->nb_cmd - 1)
+	{
+		dup2(data->pipe_fd[i - 1][0], STDIN_FILENO);
+		fd_out = open(data->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		//error gestion
+		dup2(fd_out, STDOUT_FILENO);
+		close(fd_out);
+	}	
+	else
+	{
+		dup2(data->pipe_fd[i - 1][0], STDIN_FILENO);
+		dup2(data->pipe_fd[i][1], STDOUT_FILENO);
+	}
+	j = 0;
+	while (j < data->nb_cmd - 1)
+	{
+		close(data->pipe_fd[j][0]);
+		close(data->pipe_fd[j][1]);
+		j++;
+	}
+	
+	args = ft_split(data->cmds[i], ' ');
+	//error gestion
+	path = get_path(args[0], envp);
+	if (execve(path, args, envp) == -1)
+	{
+		perror("execve");
+		exit(EXIT_FAILURE);
+	}
 	free(path);
+	free_str_array(args);
 }
 
-char *get_path(t_cmd **s_cmd, char **envp, char *cmd)
+void exec_process(t_data *data, char **envp)
 {
-	int i;
+	int i = 0;
+	pid_t pid;
+
+	data->children = malloc(data->nb_cmd * sizeof(pid_t));
+	// error gestion
+
+	while (i < data->nb_cmd)
+	{
+		pid = fork();
+		//gestion error
+		if (pid == 0)
+			child_process(data, i, envp);
+		else
+			data->children[i] = pid;
+		i++;
+	}
+}
+
+char	*get_path(char *cmd, char **envp)
+{
+	int		i;
 	char	*path;
-	char	*tmp_cmd;
+	char	**all_path;
 
 	i = 0;
 	while(envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			(*s_cmd)->path = ft_split(&envp[i][6], ':');
+			all_path = ft_split(&envp[i][6], ':');
 		i++;
 	}
+	cmd = ft_strjoin("/", cmd);
 	i = 0;
-	tmp_cmd = ft_strjoin("/", cmd);
-	while ((*s_cmd)->path[i])
+	while (all_path[i])
 	{
-		path = ft_strjoin((*s_cmd)->path[i], (const char *)tmp_cmd);
-		if (access(path, F_OK) == 0)
-			return (free(tmp_cmd), path);
-		free (path);
+		path = ft_strjoin(all_path[i], cmd);
+		if (access((const char *)path, F_OK) == 0)
+			{
+				free_str_array(all_path);
+				return (path);
+			}
 		i++;
 	}
-	free(tmp_cmd);
-	return (NULL);
-}
-
-void child_1(t_data **data, char **envp, char *cmd)
-{
-	t_cmd *s_cmd;
-	char *path;
-
-	s_cmd = malloc(sizeof(t_cmd));
-	s_cmd->cmd_arg = ft_split(cmd, ' ');
-	path = get_path(&s_cmd, envp, s_cmd->cmd_arg[0]);
-	ft_printf("path = %s\n", path);
-	(*data)->child1 = fork();
-	if	((*data)->child1 == -1)
-	{
-		perror("erreur fork");
-		exit (1);
-	}
-	if ((*data)->child1 == 0)
-	{
-		dup2((*data)->pipe_fd[1], STDOUT_FILENO);
-		dup2((*data)->fd_in, STDIN_FILENO);
-		close((*data)->pipe_fd[0]);
-		if (execve(path, s_cmd->cmd_arg, envp) == -1)
-		{
-			ft_printf("execve failed: %s\n");
-			exit(1);
-		}
-	}
-	free_tcmd(&s_cmd, path);
-}
-
-void child_2(t_data **data, char **envp, char *cmd)
-{
-	t_cmd *s_cmd2;
-	char *path;
-
-	s_cmd2 = malloc(sizeof(t_cmd));
-	s_cmd2->cmd_arg = ft_split(cmd, ' ');
-	path = get_path(&s_cmd2, envp, s_cmd2->cmd_arg[0]);
-	ft_printf("path = %s\n", path);
-	(*data)->child2 = fork();
-	if	((*data)->child2 == -1)
-	{
-		perror("erreur fork");
-		exit (1);
-	}
-	if ((*data)->child2 == 0)
-	{
-		dup2((*data)->pipe_fd[0], STDIN_FILENO);
-		dup2((*data)->fd_out, STDOUT_FILENO);
-		close((*data)->pipe_fd[1]);
-		if (execve(path, s_cmd2->cmd_arg, envp) == -1)
-		{
-			ft_printf("execve failed: %s\n");
-			exit(1);
-		}
-	}
-	free_tcmd(&s_cmd2, path);
+	return (free(path), free_str_array(all_path), NULL);
 }
 
 int	main(int argc, char const *argv[], char **envp)
 {
 	t_data	*data;
 
+
 	data = malloc(sizeof(t_data));
-	if (argc < 5)
-		return 0;
-
-	pipe(data->pipe_fd);
-	data->fd_in = open(argv[1], O_RDONLY);
-	data->fd_out = open(argv[4], O_WRONLY);
+	data->infile = ft_strdup(argv[1]);
+	data->outfile = ft_strdup(argv[argc - 1]);
+	//gestion error
+	parse_cmd(&data, argc, (char **)argv);
 	
-	child_1(&data, envp, (char *)argv[2]);
-	child_2(&data, envp, (char *)argv[3]);
-
-	dup2(data->pipe_fd[0], 0);
-	close(data->pipe_fd[0]);
-	close(data->pipe_fd[1]);
-	waitpid(data->child1, NULL, 0);
-	waitpid(data->child2, NULL, 0);
+	open_pipe(&data);
 	
-	free(data);
+	exec_process(data, envp);
+
+	close_parent_pipes(data);
+
+	wait_children(data);
+	
+	free_data(data);
 	return (0);
 }
-
 

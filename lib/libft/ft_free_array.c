@@ -1,48 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_usitoa.c                                        :+:      :+:    :+:   */
+/*   ft_free_array.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/19 10:57:42 by draask            #+#    #+#             */
-/*   Updated: 2025/01/21 12:46:31 by draask           ###   ########.fr       */
+/*   Created: 2025/01/22 17:08:28 by draask            #+#    #+#             */
+/*   Updated: 2025/01/22 17:08:33 by draask           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	cntchar(unsigned int n)
+void	ft_free_array(void **array)
 {
-	unsigned int	mod;
-	int				rep;
+	int i = 0;
 
-	mod = n;
-	rep = 0;
-		while (mod >= 10)
+	if (!array)
+		return;
+	while (array[i] != NULL)
 	{
-		mod = mod / 10;
-		rep++;
+		free(array[i]);
+		array[i] = NULL;
+		i++;
 	}
-	return (rep);
-}
-
-char	*ft_usitoa(unsigned int n)
-{
-	int					len;
-	unsigned int		temp;
-	char				*rep;
-
-	len = cntchar(n);
-	rep = ft_calloc(len + 2, 1);
-	if (!rep)
-		return (NULL);
-	temp = n;
-	while (len >= 0)
-	{
-		rep[len] = (temp % 10) + 48;
-		len--;
-		temp = temp / 10;
-	}
-	return (rep);
+	free(array);
+	array = NULL;
 }

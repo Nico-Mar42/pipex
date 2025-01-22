@@ -92,5 +92,6 @@ int			printzero(int minlen, int countemp);
 char		*get_next_line(int fd);
 int			ft_not_in_set(char const *s, char const *set);
 long		ft_atol(const char *nptr);
+void		ft_free_array(void **array);
 
 #endif // FT_PRINTF_H

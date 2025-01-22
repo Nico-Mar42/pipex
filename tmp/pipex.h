@@ -6,7 +6,7 @@
 /*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 14:52:21 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/22 17:12:13 by draask           ###   ########.fr       */
+/*   Updated: 2025/01/21 12:18:44 by draask           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,17 @@
 
 typedef struct s_data
 {
-	int			nb_cmd;
-	int			**pipe_fd;
-	char		**cmds;
-	char		*infile;
-	char		*outfile;
-	pid_t		*children;
-	
+	int			pipe_fd[2];
+	int			fd_in;
+	int			fd_out;
+	pid_t		child1;
+	pid_t		child2;
 }				t_data;
 
-char	*get_path(char *cmd, char **envp);
-void	error(int error, char *cmd);
-void	parse_cmd(t_data **data, int argc, char **argv);
-void	open_pipe(t_data **data);
-void	free_data(t_data *data);
-void	close_parent_pipes(t_data *data);
-void	wait_children(t_data *data);
-void	free_str_array(char **array);
+typedef struct s_cmd
+{
+	char		**path;
+	char		**cmd_arg;
+}			t_cmd;
 
 #endif

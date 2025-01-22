@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 13:00:42 by nicolmar          #+#    #+#             */
-/*   Updated: 2024/11/19 13:26:42 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/21 12:47:08 by draask           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,9 @@ int	ft_printf(const	char *format, ...)
 {
 	va_list	ap;
 	int		count;
-	int		argnbr;
 
 	va_start(ap, format);
 	count = 0;
-	argnbr = 1;
 	while (*format != 0)
 	{
 		if (*format != '%')

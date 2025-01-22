@@ -13,7 +13,9 @@ LIBFT_LIB = $(LIBFT_DIR)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
 
 # Sources et objets
-ALL_SRC = main.c 
+ALL_SRC = main.c \
+		utils.c \
+		free_data.c 
 SRC = $(addprefix $(SRC_DIR)/, $(ALL_SRC))
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
