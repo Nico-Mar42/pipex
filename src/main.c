@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 14:26:07 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/22 17:34:10 by draask           ###   ########.fr       */
+/*   Updated: 2025/01/24 16:22:45 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,65 +14,28 @@
 
 void	child_process(t_data *data, int i, char **envp)
 {
-	int		fd_in;
-	int		fd_out;
-	int		j;
-	char	**args;
-	char	*path;
-
 	if (i == 0)
-	{
-		fd_in = open(data->infile, O_RDONLY);
-		//error gestion
-		dup2(fd_in, STDIN_FILENO);
-		close(fd_in);
-		dup2(data->pipe_fd[0][1], STDOUT_FILENO);
-	}
+		first_child(data, envp, i);
 	else if (i == data->nb_cmd - 1)
-	{
-		dup2(data->pipe_fd[i - 1][0], STDIN_FILENO);
-		fd_out = open(data->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		//error gestion
-		dup2(fd_out, STDOUT_FILENO);
-		close(fd_out);
-	}	
+		last_child(data, envp, i);
 	else
-	{
-		dup2(data->pipe_fd[i - 1][0], STDIN_FILENO);
-		dup2(data->pipe_fd[i][1], STDOUT_FILENO);
-	}
-	j = 0;
-	while (j < data->nb_cmd - 1)
-	{
-		close(data->pipe_fd[j][0]);
-		close(data->pipe_fd[j][1]);
-		j++;
-	}
-	
-	args = ft_split(data->cmds[i], ' ');
-	//error gestion
-	path = get_path(args[0], envp);
-	if (execve(path, args, envp) == -1)
-	{
-		perror("execve");
-		exit(EXIT_FAILURE);
-	}
-	free(path);
-	free_str_array(args);
+		int_child(data, envp, i);
 }
 
-void exec_process(t_data *data, char **envp)
+void	exec_process(t_data *data, char **envp)
 {
-	int i = 0;
-	pid_t pid;
+	int		i;
+	pid_t	pid;
 
+	i = 0;
+	//if (ft_strncmp(".tmp.txt", data->infile, 9) == 0)
+	//	i++;
 	data->children = malloc(data->nb_cmd * sizeof(pid_t));
-	// error gestion
-
 	while (i < data->nb_cmd)
 	{
 		pid = fork();
-		//gestion error
+		if (pid == -1)
+			error(4, NULL, NULL);
 		if (pid == 0)
 			child_process(data, i, envp);
 		else
@@ -88,7 +51,7 @@ char	*get_path(char *cmd, char **envp)
 	char	**all_path;
 
 	i = 0;
-	while(envp[i])
+	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			all_path = ft_split(&envp[i][6], ':');
@@ -100,10 +63,10 @@ char	*get_path(char *cmd, char **envp)
 	{
 		path = ft_strjoin(all_path[i], cmd);
 		if (access((const char *)path, F_OK) == 0)
-			{
-				free_str_array(all_path);
-				return (path);
-			}
+		{
+			free_str_array(all_path);
+			return (path);
+		}
 		i++;
 	}
 	return (free(path), free_str_array(all_path), NULL);
@@ -113,22 +76,25 @@ int	main(int argc, char const *argv[], char **envp)
 {
 	t_data	*data;
 
-
+	if (argc < 5)
+		exit(EXIT_FAILURE);
 	data = malloc(sizeof(t_data));
+	data->here_doc = 0;
+	if (ft_strncmp("here_doc", argv[1], 9) != 0)
 	data->infile = ft_strdup(argv[1]);
+	else 
+	{
+		data->infile = ft_strdup(here_doc((char *)argv[2]));
+		data->here_doc = 1;
+	}
 	data->outfile = ft_strdup(argv[argc - 1]);
-	//gestion error
 	parse_cmd(&data, argc, (char **)argv);
-	
 	open_pipe(&data);
-	
 	exec_process(data, envp);
-
 	close_parent_pipes(data);
-
 	wait_children(data);
-	
+	if (data->here_doc == 1)
+		unlink(".tmp.txt");
 	free_data(data);
 	return (0);
 }
-
