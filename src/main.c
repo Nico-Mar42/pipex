@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 14:26:07 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/27 09:42:36 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:18:51 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,9 @@ char	*get_path(char *cmd, char **envp)
 			return (path);
 		}
 		i++;
+		free(path);
 	}
-	return (free(path), free_str_array(all_path), NULL);
+	return (free(cmd), free_str_array(all_path), NULL);
 }
 
 int	main(int argc, char const *argv[], char **envp)

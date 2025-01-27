@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 14:52:21 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/24 16:07:50 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:20:23 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,7 @@ void	first_child(t_data *data, char **envp, int i);
 void	last_child(t_data *data, char **envp, int i);
 void	int_child(t_data *data, char **envp, int i);
 char	*here_doc(char *limiter);
+int		fd_open(t_data *data, char *file, int in_out);
+void	path_error(t_child *child, t_data *data);
 
 #endif

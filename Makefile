@@ -17,7 +17,8 @@ ALL_SRC = main.c \
 		utils.c \
 		free_data.c \
 		children.c \
-		here_doc.c 
+		here_doc.c \
+		error.c 
 SRC = $(addprefix $(SRC_DIR)/, $(ALL_SRC))
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

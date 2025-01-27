@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 16:22:16 by draask            #+#    #+#             */
-/*   Updated: 2025/01/24 16:07:46 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:05:50 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,30 +55,4 @@ void	free_str_array(char **array)
 	}
 	free(array);
 	array = NULL;
-}
-
-void	error(int error, t_data *data, t_child *child)
-{
-	if (error == 1)
-	{
-		perror("open error");
-		close_pipe(data);
-	}
-	if (error == 2)
-	{
-		perror("path error");
-		free_str_array(child->args);
-		free(child);
-	}
-	if (error == 3)
-	{
-		perror("execve");
-		free_str_array(child->args);
-		free(child->path);
-		free(child);
-	}
-	if (error == 4)
-		perror("fork error");
-	free_data(data);
-	exit(EXIT_FAILURE);
 }
