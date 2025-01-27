@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_usitoa.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 10:57:42 by draask            #+#    #+#             */
-/*   Updated: 2025/01/21 12:46:31 by draask           ###   ########.fr       */
+/*   Updated: 2025/01/27 09:40:46 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	cntchar(unsigned int n)
 
 	mod = n;
 	rep = 0;
-		while (mod >= 10)
+	while (mod >= 10)
 	{
 		mod = mod / 10;
 		rep++;

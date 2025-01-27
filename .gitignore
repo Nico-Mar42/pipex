@@ -1,0 +1,4 @@
+#a ignorer
+odl_src/
+*.o
+.pipex

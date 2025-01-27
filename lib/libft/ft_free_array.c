@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free_array.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 17:08:28 by draask            #+#    #+#             */
-/*   Updated: 2025/01/22 17:08:33 by draask           ###   ########.fr       */
+/*   Updated: 2025/01/27 09:42:08 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 void	ft_free_array(void **array)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (!array)
-		return;
+		return ;
 	while (array[i] != NULL)
 	{
 		free(array[i]);

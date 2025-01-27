@@ -6,13 +6,13 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:35 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/24 14:07:11 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/27 09:43:34 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-char *here_doc(char *limiter)
+char	*here_doc(char *limiter)
 {
 	int		tmp;
 	char	*nl;
@@ -26,7 +26,7 @@ char *here_doc(char *limiter)
 		ft_putstr_fd("pipe Heredoc> ", 1);
 		ft_putstr_fd(nl, tmp);
 		free(nl);
-		nl = get_next_line(0);	
+		nl = get_next_line(0);
 	}
 	free(nl);
 	close(tmp);

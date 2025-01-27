@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 11:20:02 by draask            #+#    #+#             */
-/*   Updated: 2025/01/24 16:15:07 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/27 09:43:06 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	parse_cmd(t_data **data, int argc, char **argv)
 {
 	int	i;
-	
+
 	i = 0;
 	if ((*data)->here_doc == 0)
 	{

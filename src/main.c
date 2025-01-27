@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 14:26:07 by nicolmar          #+#    #+#             */
-/*   Updated: 2025/01/24 16:22:45 by nicolmar         ###   ########.fr       */
+/*   Updated: 2025/01/27 09:42:36 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ void	exec_process(t_data *data, char **envp)
 	pid_t	pid;
 
 	i = 0;
-	//if (ft_strncmp(".tmp.txt", data->infile, 9) == 0)
-	//	i++;
 	data->children = malloc(data->nb_cmd * sizeof(pid_t));
 	while (i < data->nb_cmd)
 	{
@@ -81,8 +79,8 @@ int	main(int argc, char const *argv[], char **envp)
 	data = malloc(sizeof(t_data));
 	data->here_doc = 0;
 	if (ft_strncmp("here_doc", argv[1], 9) != 0)
-	data->infile = ft_strdup(argv[1]);
-	else 
+		data->infile = ft_strdup(argv[1]);
+	else
 	{
 		data->infile = ft_strdup(here_doc((char *)argv[2]));
 		data->here_doc = 1;
