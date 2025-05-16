@@ -43,17 +43,6 @@ Doit produire le même résultat que :
 ```
 
 ---
-
-## 🛠️ Fichiers du projet
-
-* `pipex.c` — point d’entrée du programme.
-* `utils.c` — fonctions utilitaires (parsing, erreurs...).
-* `childs.c` — gestion des processus enfants et des redirections.
-* `libft/` — (optionnel) fonctions perso si autorisées.
-* `Makefile` — pour compiler facilement le projet.
-
----
-
 ## ⚙️ Compilation
 
 ```bash
